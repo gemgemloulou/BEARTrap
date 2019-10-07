@@ -50,8 +50,8 @@ extern double TRAP_FWHM;
 #define TRAP_FWHM_ZSCALE 1.0
 
 //#define CHARGE 2
-//#define RF_FREQ 0.310  /* rf frequency in MHz */
-#define RF_FREQ 0.44 /* GLW 19Sep17 */
+#define RF_FREQ 0.310  /* rf frequency in MHz */
+//#define RF_FREQ 0.44 /* GLW 19Sep17 */
 // Commenting out old values of BD_X and BD_Y
 //#define BD_X -36.0      /* Beta Detector distance from center of trap, used to be 55.16 in POP */
 //#define BD_Y 75.0      /* Beta Detector distance from center of trap, used to be 61.3 in POP */

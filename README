@@ -9,9 +9,22 @@
    	./bd [isotope] [daughter] [# decays] [g/n (1/2)] [FWHM ion cloud]
    iv. Generates aux, geant and simion files for processing and knitting. 
 
+2. GEANT
+   i. In the Gen2/BDNbuild directory, ./BDN path/to/whatever_geant.txt
+   ii. Change the name of the output from GEANT4_output.txt
+
 
 *************************************************
 * * * * * * * * * * F I L E S * * * * * * * * * * 
 *************************************************
-Gen2 - added 07x2019
+Gen2/ - added 07x2019
 - original BPT simulation
+
+BDGen16-06-08/ - added 07x2019
+- Generates simion and geant files from the precursor and daughter input
+
+En/ 
+- Current simulation of neuton energies for the NIM
+- Initially two neutron energies (0.1, 1 MeV)
+- abv = -0.3333, charge state = 2+, FWHM = 2.5mm 
+- BDGen made 1,000,001 decays for each. 
