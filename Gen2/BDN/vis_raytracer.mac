@@ -1,0 +1,16 @@
+/vis/open RayTracer
+/vis/drawVolume
+#/vis/geometry/set/visibility World 0 false
+/vis/viewer/refresh
+/vis/viewer/set/style wireframe
+/vis/viewer/refresh
+/vis/viewer/zoom 4
+/vis/viewer/refresh
+/vis/viewer/set/viewpointThetaPhi 0 0
+/vis/viewer/refresh
+#/vis/viewer/set/viewpointThetaPhi 45 0
+#/vis/viewer/set/viewpointThetaPhi -45 0
+/vis/viewer/set/lightsVector -1 0 0
+/vis/viewer/refresh
+
+

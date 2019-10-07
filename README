@@ -1,0 +1,17 @@
+*************************************************
+* * H O W  T O  R U N  S I M U L A T I O N S * *
+*************************************************
+1. Generate input for simion & geant
+   i. isotope file for precursor contains info about charge states, 
+      b-nu coefficient, ion cloud size &c
+   ii. RIPL file for daughter
+   iii. Use BDGen16-06-08
+   	./bd [isotope] [daughter] [# decays] [g/n (1/2)] [FWHM ion cloud]
+   iv. Generates aux, geant and simion files for processing and knitting. 
+
+
+*************************************************
+* * * * * * * * * * F I L E S * * * * * * * * * * 
+*************************************************
+Gen2 - added 07x2019
+- original BPT simulation

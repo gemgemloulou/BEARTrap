@@ -1,0 +1,13 @@
+/vis/open OGL
+/vis/viewer/set/autoRefresh true
+/vis/drawVolume
+#/vis/geometry/set/visibility World 0 false
+/vis/viewer/set/style wireframe
+/vis/viewer/zoom 4
+#/vis/scene/add/axes
+/vis/viewer/set/viewpointThetaPhi 0 0
+#/vis/viewer/set/viewpointThetaPhi 45 0
+#/vis/viewer/set/viewpointThetaPhi -45 0
+/vis/viewer/set/lightsVector 0 0 1
+
+
