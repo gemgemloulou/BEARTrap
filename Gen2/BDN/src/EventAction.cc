@@ -231,7 +231,7 @@ void EventAction::EndOfEventAction( const G4Event* evt)
 	}  //Added by bswang, 2/13/2015
 	counter++;
 
-	//G4cout << EID << G4endl;
+	if(EID%50000 == 0) G4cout << EID << G4endl;
 	
 	//outputFile << EID << ", 0, 0, " << l_dE/keV << ", " << l_E/keV << ", " << b_dE/keV << ", " << b_E/keV << endl;
 	outputFile << EID << ", 0, 0, " << l_dE/keV << ", " << l_E/keV << ", " << b_dE/keV << ", " << b_E/keV << ", " << t_HPGe/keV << ", " << r_HPGe/keV << endl;  //Edited by bswang, 2/13/2015
