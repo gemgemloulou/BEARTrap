@@ -12,13 +12,28 @@
 2. GEANT
    i. In the Gen2/BDNbuild directory, ./BDN path/to/whatever_geant.txt
    ii. Change the name of the output from GEANT4_output.txt
+   
+3. Simion
+   i. Load the .iob into simion, and then change the scales and things:
+      Scale = 0.5; Xwb+ = -150; Ywb+ = 75; Zwb+ = -75; Xwo+ = Ywo+ = Zwo+ = 0;
+      Rotation = +Z-Y+X; Az = -90; El = 0; Rot = 180;
+   ii. The Prg file in the drive is for 137I. The differences for the isotopes is the RF things. 
+      For 134Sb: RFFreq A = 0.310e6, B = 0.310e6; C = 0.930e6
+      rfVolts A = 200, B = 22.2159, C = 17
+      Theta A = -4.530, B = 3.141, C = 2.765
+   iii. Running: .\simion.exe --nogui --default-num-particles=[number from BDGen] fly 
+               --recording-output=C:\Users\b276918\Sim\path\output.dat 
+               --particles=C:\path\to\whatever_simion.ion
+               --trajectory-quality=3 C:\Users\b276918\Sim\GRAVEYARD\DN_Trap10WC_2013_52pt5mm.iob
+               
+ 4. Knitting
 
 
 *************************************************
 * * * * * * * * * * F I L E S * * * * * * * * * * 
 *************************************************
 Gen2/ - added 07x2019
-- original BPT simulation
+- original BPT GEANT4 simulation
 
 BDGen16-06-08/ - added 07x2019
 - Generates simion and geant files from the precursor and daughter input
@@ -28,3 +43,7 @@ En/
 - Initially two neutron energies (0.1, 1 MeV)
 - abv = -0.3333, charge state = 2+, FWHM = 2.5mm 
 - BDGen made 1,000,001 decays for each. 
+
+SimionFiles/
+- contains the iob for gen2. You also need a pa# file, but it's large, so it's on the google drive
+- contains the prg file for 137I. 
