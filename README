@@ -33,7 +33,7 @@
 * * * * * * * * * * F I L E S * * * * * * * * * * 
 *************************************************
 Gen2/ - added 07x2019
-- original BPT simulation
+- original BPT GEANT4 simulation
 
 BDGen16-06-08/ - added 07x2019
 - Generates simion and geant files from the precursor and daughter input
