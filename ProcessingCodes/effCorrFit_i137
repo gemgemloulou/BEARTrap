@@ -1,0 +1,39 @@
+set term postscript eps font "Times-Roman,25" size 7,5
+set termopt enhanced
+set termoption dash
+set output 'effCorr_i137_fit.eps'
+#unset key
+set key inside left bottom vertical Left noreverse enhanced autotitles box linetype -1 linewidth 0.000
+
+set title "Neutron energy spectrum correction, ^{137}I" font ',30'
+set xlabel "Neutron Energy (MeV)" font ',28'
+set ylabel "Fractional change in efficiency" offset 2 font ',28'
+
+set yrange [0:1.5]
+set xrange [0:2.0]
+
+set style line 1 lt 1 lw 1 pt 7 ps 1.5 lc rgb "black"
+set style line 2 lt 1 lw 1 pt 3 ps 1.5 lc rgb "red"
+set style line 3 lt 1 lw 1 pt 5 ps 1.5 lc rgb "blue"
+set style line 4 lt 1 lw 1 pt 9 ps 1.5 lc rgb "orange"
+
+f1(x) = a + b*x + c*x**2 + d*x**3 + e*x**4 + f*x**5
+f2(x) = a2 + b2*x + c2*x**2 + d2*x**3 + e2*x**4 + f2*x**5
+f3(x) = a3 + b3*x + c3*x**2 + d3*x**3 + e3*x**4 + f3*x**5
+f4(x) = a4 + b4*x + c4*x**2 + d4*x**3 + e4*x**4 + f4*x**5
+
+fit f1(x) 'effCorr_i137.txt' using 1:2:3 via a,b,c,d,e,f
+fit f2(x) 'effCorr_i137.txt' using 1:4:5 via a2,b2,c2,d2,e2,f2
+fit f3(x) 'effCorr_i137.txt' using 1:6:7 via a3,b3,c3,d3,e3,f3
+fit f4(x) 'effCorr_i137.txt' using 1:8:9 via a4,b4,c4,d4,e4,f4
+
+set print "i137_fitParams.txt"
+print a,b,c,d,e,f
+print a2,b2,c2,d2,e2,f2
+print a3,b3,c3,d3,e3,f3
+print a4,b4,c4,d4,e4,f4
+
+plot "effCorr_i137.txt" u 1:2:3 w errorbars ls 1 title "Left-Right", f1(x) w lines ls 1 title "Left-Right Fit",\
+"effCorr_i137.txt" u 1:4:5 w errorbars ls 2 title "Left-Top", f2(x) w lines ls 2 title "Left-Top Fit",\
+"effCorr_i137.txt" u 1:6:7 w errorbars ls 3 title "Bottom-Right", f3(x) w lines ls 3 title "Bottom-Right Fit",\
+"effCorr_i137.txt" u 1:8:9 w errorbars ls 4 title "Bottom-Top", f4(x) w lines ls 4 title "Bottom-Top Fit"

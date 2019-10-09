@@ -1,0 +1,156 @@
+// THIS REQUIRES SIMULATED DATA, again over a range of neutron energies
+
+TCut c_mcpr="simion.pos_x>-23&&simion.pos_x<23&&simion.pos_y>-23&&simion.pos_y<23&&simion.pos_z<52.6&&simion.pos_z>52.4";
+TCut c_mcpt="simion.pos_x>-23&&simion.pos_x<23&&simion.pos_y>52.4&&simion.pos_y<52.6&&simion.pos_z>-23&&simion.pos_z<23";
+
+TCut c_del="geant.de_l[0]>0";
+TCut c_deb="geant.de_b[0]>0";
+TCut c_del50="geant.de_l[0]>76.0"; // +/- 24 keV
+TCut c_deb50="geant.de_b[0]>62.0"; // +/- 30 keV
+TCut c_ndel = "geant.de_l[1] > 368.0"; // +/- 71 keV
+TCut c_ndeb = "geant.de_b[1] > 368.0";
+
+// other cuts
+TCut neutronCut = "(master.n_E - 1838.68311864)*0.51099906 >= 0.1";
+TCut noCut="master.evtnum>=0";
+
+int totBins;
+double binLo;
+double binHi;
+
+void allEffTotal(){ // use this to get the correction per energy (from monoenergetic neutron distribution) to be applied to the spectrum.
+    
+    //for (int i=0; i<4; i++) getEffTotal("simDataFiles/145Cs_mono_Eff.root", "simDataFiles/145Cs_mono.root", i);
+    //for (int i=0; i<4; i++) getEffTotal("simDataFiles/144Cs_mono_Eff.root", "simDataFiles/144Cs_mono.root", i);
+    //for (int i=0; i<4; i++) getEffTotal("simDataFiles/137I_mono_Eff.root", "simDataFiles/137I_mono.root", i);
+    //for (int i=0; i<4; i++) getEffTotal("simDataFiles/138I_mono_Eff.root", "simDataFiles/138I_mono.root", i);
+    //for (int i=0; i<4; i++) getEffTotal("137I_c2_a-0.33_4n_Eff.root", "137I_c2_a-0.33_4n.root", i);
+    //for (int i=0; i<4; i++) getEffTotal("D:/Files_BarbaraWang/Work/ResearchProjects/IonTrapping/Analysis/Beta-DelayedNeutrons/Gen2IonTrap/IsotopeRootFiles/135Sb/neutrons/135Sb_n_p1_Eff.root", "D:/Files_BarbaraWang/Work/ResearchProjects/IonTrapping/Analysis/Beta-DelayedNeutrons/Gen2IonTrap/IsotopeRootFiles/135Sb/neutrons/135Sb_n_p1.root", i);
+    for (int i=0; i<4; i++) getEffTotal("/Volumes/Wu/137I_ForLSU/137I_c2_a-0.33_4n_Eff.root", "/Volumes/Wu/137I_ForLSU/137I_c2_a-0.33_4n.root", i);
+    
+    // check if charge state matters much
+   // for (int i=0; i<4; i++) getEffTotal("simDataFiles/137I_neutron_c3_Eff.root", "simDataFiles/137I_neutron_c3.root", i);
+   // for (int i=0; i<4; i++) getEffTotal("simDataFiles/137I_neutron_c4_Eff.root", "simDataFiles/137I_neutron_c4.root", i);
+   // for (int i=0; i<4; i++) getEffTotal("simDataFiles/137I_c2_a-13_Eff.root", "simDataFiles/137I_c2_a-13.root", i);
+   c1->SaveAs("RawEvents.pdf");
+    
+}
+
+void getEffTotal(char *fdata, char *fdata2, int detNum){
+    
+    char buffer [150];
+    
+	//totBins = 49;
+	totBins = 52;
+	binLo = -0.05;
+	//binHi = 3.25;
+	//binHi = 4.85;
+	binHi = 5.15;
+	sprintf (buffer, "((master.n_E - 1838.68311864)*0.51099906)>>tempAll(%d,%f,%f)", totBins, binLo, binHi);
+	
+    TH1F *rawEvents = new TH1F("rawEvents","rawEvents",totBins,binLo,binHi);
+    TH1F *cutEvents = new TH1F("cutEvents","cutEvents",totBins,binLo,binHi);
+    
+    // MCP efficiency cut
+	if (detNum == 0) TCut theCutComp = c_mcpr && (c_del50 || c_ndel);	// Right-Left
+	if (detNum == 1) TCut theCutComp = c_mcpt && c_del50;	// Top-Left
+    if (detNum == 2) TCut theCutComp = c_mcpr && c_deb50;	// Right-Bottom
+	if (detNum == 3) TCut theCutComp = c_mcpt && (c_deb50 || c_ndeb);	// Top-Bottom
+    
+    drawHist(fdata, cutEvents, buffer, theCutComp);
+    drawHist(fdata2, rawEvents, buffer, noCut);
+    
+    rawEvents->Draw();
+    cutEvents->Draw("same");
+    cutEvents->SetLineColor(kRed);
+    
+    cout << cutEvents->GetEntries() << endl;
+    
+    ofstream myfile;
+    myfile.open ("totalEff.txt", ios::out | ios::app | ios::binary);
+    
+    ofstream myfile2;
+    myfile2.open ("totalEff_wbr.txt", ios::out | ios::app | ios::binary);
+    
+    myfile << fdata << endl;
+    if (detNum == 0) myfile << "Left-Right" << endl;
+    if (detNum == 1) myfile << "Left-Top" << endl;
+    if (detNum == 2) myfile << "Bottom-Right" << endl;
+    if (detNum == 3) myfile << "Bottom-Top" << endl;
+    
+    myfile2 << fdata2 << endl;
+    if (detNum == 0) myfile2 << "Left-Right" << endl;
+    if (detNum == 1) myfile2 << "Left-Top" << endl;
+    if (detNum == 2) myfile2 << "Bottom-Right" << endl;
+    if (detNum == 3) myfile2 << "Bottom-Top" << endl;
+    
+    float solidAngles = 0;
+    float solidAnglesFracErr = 0;
+    
+    // events to devide by (original solid angle events)
+    if (detNum == 0) solidAngles = 0.002507843; // left-right
+    if (detNum == 1) solidAngles = 0.002532478; // left-top
+    if (detNum == 2) solidAngles = 0.002553653; // bottom-right
+    if (detNum == 3) solidAngles = 0.002578738; // bottom-top
+    
+    // fractional error for the solid angles (err/solid angle):
+    if (detNum == 0) solidAnglesFracErr = 0.026172417; // left-right
+    if (detNum == 1) solidAnglesFracErr = 0.026170432; // left-top
+    if (detNum == 2) solidAnglesFracErr = 0.025966027; // bottom-right
+    if (detNum == 3) solidAnglesFracErr = 0.025964026; // bottom-top
+    
+    float fracEff, fracEffErr;
+    double totEvents = 0;
+    double totDetEvents = 0;
+    double saEvents = 0;
+    double detEvents = 0;
+    
+    for (int i = 0; i<totBins; i++) {
+        
+        saEvents = 0;
+        detEvents = 0;
+        fracEff = 0;
+        
+        saEvents = double(rawEvents->GetBinContent(i));
+        detEvents = double(cutEvents->GetBinContent(i));
+        
+        if (saEvents > 0) totEvents = totEvents + saEvents;
+        if (detEvents > 0) totDetEvents = totDetEvents + detEvents;
+        
+        if (detNum == 0) myfile2 << cutEvents->GetBinCenter(i) << "\t";
+        
+        fracEff = float(detEvents/saEvents);
+        fracEffErr = fracEff*sqrt( (1.0/detEvents) + (1.0/saEvents) );
+        if (detEvents == 0) {
+            fracEff = 0;
+            fracEffErr = 0;
+        }
+        myfile << fracEff << "\t" << fracEffErr << endl;
+        
+        fracEff = float(fracEff/solidAngles);
+        fracEffErr = fracEff*sqrt( (1.0/detEvents) + (1.0/saEvents) + (solidAnglesFracErr*solidAnglesFracErr) );
+        
+        myfile2 << fracEff << "\t" << fracEffErr << endl;
+        
+    }
+    
+    double omega_br = totDetEvents/(totEvents*solidAngles);
+    double omega_br_err = omega_br * sqrt( (1.0/totEvents) + (1.0/totDetEvents) + (solidAnglesFracErr*solidAnglesFracErr) );
+    
+    cout << detNum << "\t" << omega_br << "\t" << omega_br_err << endl;
+    
+    myfile.close();
+    myfile2.close();
+    
+}
+
+void drawHist(char *fname, TH1F *hist1, char *buffer, char *theCut){
+    
+    TFile *oldfile = new TFile(fname);
+    TTree *oldtree = (TTree*)oldfile->Get("bdntree");
+    
+    oldtree->Draw(buffer, theCut);
+    hist1->Add(tempAll,1.0);
+    tempAll->Reset("ICESM");
+    
+}

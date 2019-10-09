@@ -1,0 +1,432 @@
+../En/out_137I_g2_n_0.1MeV.root
+Left-Right
+-0.1	0	-nan
+0	0.322444	0.0165071
+0.1	0.350266	0.0591185
+0.2	0	-nan
+0.3	0	-nan
+0.4	0	-nan
+0.5	0	-nan
+0.6	0	-nan
+0.7	0	-nan
+0.8	0	-nan
+0.9	0	-nan
+1	0	-nan
+1.1	0	-nan
+1.2	0	-nan
+1.3	0	-nan
+1.4	0	-nan
+1.5	0	-nan
+1.6	0	-nan
+1.7	0	-nan
+1.8	0	-nan
+1.9	0	-nan
+2	0	-nan
+2.1	0	-nan
+2.2	0	-nan
+2.3	0	-nan
+2.4	0	-nan
+2.5	0	-nan
+2.6	0	-nan
+2.7	0	-nan
+2.8	0	-nan
+2.9	0	-nan
+3	0	-nan
+3.1	0	-nan
+3.2	0	-nan
+3.3	0	-nan
+3.4	0	-nan
+3.5	0	-nan
+3.6	0	-nan
+3.7	0	-nan
+3.8	0	-nan
+3.9	0	-nan
+4	0	-nan
+4.1	0	-nan
+4.2	0	-nan
+4.3	0	-nan
+4.4	0	-nan
+4.5	0	-nan
+4.6	0	-nan
+4.7	0	-nan
+4.8	0	-nan
+4.9	0	-nan
+5	0	-nan
+../En/out_137I_g2_n_0.1MeV.root
+Left-Top
+0	-nan
+0.17355	0.0113077
+0.15416	0.038758
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+../En/out_137I_g2_n_0.1MeV.root
+Bottom-Right
+0	-nan
+0.231523	0.0133429
+0.210212	0.0451604
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+../En/out_137I_g2_n_0.1MeV.root
+Bottom-Top
+0	-nan
+0.240189	0.0135891
+0.492031	0.0694606
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+../En/out_137I_g2_n_1.0MeV.root
+Left-Right
+-0.1	0	-nan
+0	0.300616	0.0157966
+0.1	0.335506	0.0619065
+0.2	0	-nan
+0.3	0	-nan
+0.4	0	-nan
+0.5	0	-nan
+0.6	0	-nan
+0.7	0	-nan
+0.8	0	-nan
+0.9	0	-nan
+1	1.87101	0.378261
+1.1	0	-nan
+1.2	0	-nan
+1.3	0	-nan
+1.4	0	-nan
+1.5	0	-nan
+1.6	0	-nan
+1.7	0	-nan
+1.8	0	-nan
+1.9	0	-nan
+2	0	-nan
+2.1	0	-nan
+2.2	0	-nan
+2.3	0	-nan
+2.4	0	-nan
+2.5	0	-nan
+2.6	0	-nan
+2.7	0	-nan
+2.8	0	-nan
+2.9	0	-nan
+3	0	-nan
+3.1	0	-nan
+3.2	0	-nan
+3.3	0	-nan
+3.4	0	-nan
+3.5	0	-nan
+3.6	0	-nan
+3.7	0	-nan
+3.8	0	-nan
+3.9	0	-nan
+4	0	-nan
+4.1	0	-nan
+4.2	0	-nan
+4.3	0	-nan
+4.4	0	-nan
+4.5	0	-nan
+4.6	0	-nan
+4.7	0	-nan
+4.8	0	-nan
+4.9	0	-nan
+5	0	-nan
+../En/out_137I_g2_n_1.0MeV.root
+Left-Top
+0	-nan
+0.169845	0.011167
+0.0221495	0.0156732
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0.592898	0.210352
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+../En/out_137I_g2_n_1.0MeV.root
+Bottom-Right
+0	-nan
+0.233361	0.0134065
+0.0109829	0.0109868
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0.95547	0.26648
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+../En/out_137I_g2_n_1.0MeV.root
+Bottom-Top
+0	-nan
+0.24868	0.0138788
+0.261026	0.0537288
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+2.40183	0.424009
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan
+0	-nan

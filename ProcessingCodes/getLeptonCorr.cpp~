@@ -1,0 +1,325 @@
+#include "TMath.h"
+#include "TCanvas.h"
+#include "TROOT.h"
+#include "TH1I.h"
+#include "stdio.h"
+#include "string.h"
+#include "TFile.h"
+// THIS REQUIRES SIMULATED DATA. It's as a function of neutron energy, so you need to simulate 1 million neutron events over a range of energies,
+//  and then hadd the knitted files togther
+
+#include "TTree.h"
+#include "TBranch.h"
+#include "TLeaf.h"
+#include "TRandom3.h"
+using namespace std;
+
+// run sortData("137I") or whatever other isotope
+// it uses 137I_mono.root as the input, which is a simulation output from mono-energetic neutrons
+// produces [isotope]_histos.root that has all the fits to the sorted monoenergetic neutrons
+// also prints out the fit results and the initial energy
+
+// leptonCorr array is the "centroid of the energy" and
+
+void sortData(char* isotope){
+
+    char *neutronF;
+    neutronF = malloc(strlen(isotope)+50);
+    strcpy(neutronF, nameFile(isotope));
+    
+    // or just do TFile *oldfile = new TFile("fileName.root");
+    TFile *oldfile = new TFile(neutronF);
+    //TFile *oldfile = new TFile("F:/Files_BarbaraWang/Work/ResearchProjects/IonTrapping/Analysis/Beta-DelayedNeutrons/Gen2IonTrap/IsotopeRootFiles/137I/BDN_Gen2Trap_20160607_v2/neutrons/137I_mono.root");
+    //TFile *oldfile = new TFile("F:/Files_BarbaraWang/Work/ResearchProjects/IonTrapping/Analysis/Beta-DelayedNeutrons/Gen2IonTrap/IsotopeRootFiles/135Sb/neutrons/135Sb_n.root");
+    // TFile *oldfile = new TFile("/disks/1/gwilson/137I/test/small_c2_a-0.333_n.root");  
+// TFile *oldfile = new TFile("F:/Files_BarbaraWang/Work/ResearchProjects/IonTrapping/Analysis/Beta-DelayedNeutrons/Gen2IonTrap/IsotopeRootFiles/136Sb/neutrons/136Sb_n.root");
+    TTree *oldtree = (TTree*)oldfile->Get("bdntree");
+    
+    char *histosName;
+    histosName = malloc(strlen(isotope)+50);
+    strcpy(histosName, nameHisto(isotope));
+
+    TFile f(histosName,"update");
+    char buffer [50];
+    char buffer2 [50];
+    
+    TLeaf *pos_x=(TLeaf*)oldtree->GetBranch("simion")->GetLeaf("pos_x");
+    TLeaf *pos_y=(TLeaf*)oldtree->GetBranch("simion")->GetLeaf("pos_y");
+    TLeaf *pos_z=(TLeaf*)oldtree->GetBranch("simion")->GetLeaf("pos_z");
+    TLeaf *tob =(TLeaf*)oldtree->GetBranch("master")->GetLeaf("tob");
+    TLeaf *tof =(TLeaf*)oldtree->GetBranch("simion")->GetLeaf("tof");
+    TLeaf *de_b =(TLeaf*)oldtree->GetBranch("geant")->GetLeaf("de_b");
+    TLeaf *de_l =(TLeaf*)oldtree->GetBranch("geant")->GetLeaf("de_l");
+    TLeaf *n_E =(TLeaf*)oldtree->GetBranch("master")->GetLeaf("n_E");
+    TLeaf *mass=(TLeaf*)oldtree->GetBranch("simion")->GetLeaf("mass");
+    
+    mass->GetBranch()->GetEntry(1);
+    double dDaughterMass = (double)mass->GetValue();
+    double c = 299792.458;	// mm/us
+    double dDaughterMassKeV = 931494.0023*dDaughterMass;
+    double dElectronMassKeV = 510.998459259;
+	double dNeutronMassKeV = 939565.319445;
+    double dFastIonMassKeV = 0;
+    double dNeutronEnergyMassFactorKeV = 0;
+    double dGridDistance = 48.0;
+    
+    float x_lo = -23;
+    float x_hi = 23;
+    float y_lo = -23;
+    float y_hi = 23;
+    float theCharge = 2.0;
+    float de_bottom, de_left;
+    float theTof, theTob, tofVal, mcpPhysX, mcpPhysY;
+    double t1, t2, z1, z2, s1, s2, vs, vz, x2, y2;
+    double v_LT, En, EnO, EnC, Eb, E_new, E_mean;
+    char whichMCP, theMCP;
+    TRandom3 *r3 = new TRandom3();
+    float rando = r3->Rndm();
+    
+    //TH1F *EnHist90 = new TH1F("EnHist90","EnHist90",825,0,3300);
+    //TH1F *EnHist180 = new TH1F("EnHist180","EnHist180",825,0,3300);
+    //TH1F *EnHistSumRaw = new TH1F("EnHistSumRaw","EnHistSumRaw",825,0,3300);
+    TH1F *EnHist90 = new TH1F("EnHist90","EnHist90",1750,0,7000);
+    TH1F *EnHist180 = new TH1F("EnHist180","EnHist180",1750,0,7000);
+    TH1F *EnHistSumRaw = new TH1F("EnHistSumRaw","EnHistSumRaw",1750,0,7000);
+    
+    cout << "energy" << "\t" << "90_centroid" << "\t" << "90_centroid_err" << "\t";
+    cout <<  "90_fwhm" << "\t" << "90_fwhm_err" << "\t";
+    cout << "180_centroid" << "\t" << "180_centroid_err" << "\t";
+    cout <<  "180_fwhm" << "\t" << "180_fwhm_err" << endl;
+
+    int theHist = 0;
+    int j = 0;
+    float EnOprev = 0;
+    
+    int totEntries = oldtree->GetEntries();
+    for (int i=0; i<totEntries; i++){
+  
+        rando = r3->Rndm();
+        
+        theMCP = 'N';
+        EnO = 0;
+        En = 0;
+        EnC = 0;
+        tofVal = 0;
+        theTof = 0;
+        theTob = 0;
+        Eb = 0;
+        E_new = 0;
+        E_mean = 0;
+        
+        n_E->GetBranch()->GetEntry(i);
+        EnO = (double)n_E->GetValue();
+        EnO = ((EnO - 1838.68311864)*0.51099906)*1000.0;
+	//if (En0 < 4690)	{continue;}
+	//else {cout << "i = " << i << endl;
+
+        dFastIonMassKeV = dDaughterMassKeV - theCharge*dElectronMassKeV;
+        dNeutronEnergyMassFactorKeV = (dFastIonMassKeV/c/c)*(dFastIonMassKeV/dNeutronMassKeV);
+        
+        if (i == 0) EnOprev = EnO;
+        if ((EnO < EnOprev-50.0) || (EnO > EnOprev+50.0) || (i == (totEntries-1))) {
+	    cout << "i = " << i << endl;
+
+            E_mean = EnHist90->GetMean();
+            //TF1 *f2 = new TF1("f2","([0]/[2])*exp(-0.5*((x-[1])/[2])**2)",E_mean-500, E_mean+500);
+            TF1 *f2 = new TF1("f2","([0]/[2])*exp(-0.5*((x-[1])/[2])**2)",E_mean-200, E_mean+200);
+            f2->SetParameters(100,E_mean,30);
+            f2->SetLineColor(2);
+            
+            E_mean = EnHist180->GetMean();
+            //TF1 *f22 = new TF1("f22","([0]/[2])*exp(-0.5*((x-[1])/[2])**2)",E_mean-500, E_mean+500);
+            TF1 *f22 = new TF1("f22","([0]/[2])*exp(-0.5*((x-[1])/[2])**2)",E_mean-200, E_mean+200);
+            f22->SetParameters(100,E_mean,30);
+            f22->SetLineColor(6);
+            
+            EnHist90->Fit(f2, "MRQ+");
+            EnHist180->Fit(f22, "MRQ+");
+            
+            cout << EnOprev << "\t" << f2->GetParameter(1) << "\t" << f2->GetParError(1) << "\t";
+            cout << 2.355*(f2->GetParameter(2)) << "\t" << 2.355*(f2->GetParError(2)) << "\t";
+            cout << f22->GetParameter(1) << "\t" << f22->GetParError(1) << "\t";
+            cout << 2.355*(f22->GetParameter(2)) << "\t" << 2.355*(f22->GetParError(2)) << endl;
+             
+            sprintf (buffer, "hist180_%d", theHist);
+            EnHist180->Write(buffer);
+            
+            sprintf (buffer2, "hist90_%d", theHist);
+            EnHist90->Write(buffer2);
+            
+            EnOprev = EnO;
+            j++;
+            theHist = j;
+            EnHist90->Reset();
+            EnHist180->Reset();
+            
+        }
+        
+        tof->GetBranch()->GetEntry(i);
+        theTof = (float)tof->GetValue();
+        tob->GetBranch()->GetEntry(i);
+        theTob = (float)tob->GetValue();
+        tofVal = (theTof - theTob)*1000.0; // in ns
+        
+        de_b->GetBranch()->GetEntry(i);
+        de_bottom = (float)de_b->GetValue(0);
+        de_l->GetBranch()->GetEntry(i);
+        de_left = (float)de_l->GetValue(0);
+        
+        if ((de_left > 0) || (de_bottom > 0)) {
+            
+            float x=(float)pos_x->GetValue();
+            float y=(float)pos_y->GetValue();
+            float z=(float)pos_z->GetValue();
+            
+            // this is for x and y Right
+            if(z<52.6 && z>52.4){
+                theMCP = 'N';
+                if (x<x_hi && x>x_lo && y<y_hi && y>y_lo){
+                    mcpPhysX = x;
+                    mcpPhysY = y;
+                    theMCP = 'R';
+                }
+            }
+            // this is for Top MCP:
+            if(y<52.6 && y>52.4){
+                theMCP = 'N';
+                if (x<x_hi && x>x_lo && z<y_hi && z>y_lo){
+                    mcpPhysX = x;
+                    mcpPhysY = z;
+                    theMCP = 'T';
+                }
+            }
+            
+            // this is for Top detector!
+            if (theMCP == 'T'){
+                
+                t1			= 0.001 * tofToMCPGrid (dDaughterMass, 'T', tofVal); // need times in us
+                z1			= dGridDistance;
+                t2			= 0.001 * (tofVal - 0.5 + rando); // need times in us
+                x2			= mcpPhysX;
+                y2			= mcpPhysY;
+                s2			= sqrt(x2*x2 + y2*y2);
+                vs			= s2/t2;
+                vz			= z1/t1;
+                v_LT	= sqrt(vs*vs + vz*vz);
+                
+                En	= 0.5 * dNeutronEnergyMassFactorKeV * v_LT * v_LT;
+                //if (En > 5000.0) continue;
+                if (En > 6000.0) continue;
+
+                if (de_left > 0) EnHist90->Fill(En);
+                if (de_bottom > 0) {
+                    EnHistSumRaw->Fill(EnO);
+                    EnHist180->Fill(En);
+                }
+                
+            }
+            if (theMCP == 'R'){
+                
+                t1			= 0.001 * tofToMCPGrid (dDaughterMass, 'R', tofVal); // need times in us
+                z1			= dGridDistance;
+                t2			= 0.001 * (tofVal - 0.5 + rando); // need times in us
+                x2			= mcpPhysX;
+                y2			= mcpPhysY;
+                s2			= sqrt(x2*x2 + y2*y2);
+                vs			= s2/t2;
+                vz			= z1/t1;
+                v_LT	= sqrt(vs*vs + vz*vz);
+                
+                En = 0.5 * dNeutronEnergyMassFactorKeV * v_LT * v_LT;
+                //if (En > 5000.0) continue;
+                if (En > 6000.0) continue;
+                
+                if (de_left > 0) {
+                    EnHistSumRaw->Fill(EnO);
+                    EnHist180->Fill(En);
+                }
+                if (de_bottom > 0) EnHist90->Fill(En);
+                
+            }
+        }
+
+    }
+
+    EnHistSumRaw->Write("EnHistSumRaw_180");
+
+}
+
+double tofToMCPGrid(double dDaughterMass, char whichMCP, double t2) {
+	
+	using namespace TMath;
+    
+    const double c						= 299792.458;	// mm/us
+	const double keVperAMU				= 931494.0023;
+	const double dElectronMassAMU		= 0.0005485794411963045; // amu
+	const double dNeutronMassAMU		= 1.00866491585; // neutron mass in amu
+	const double dNeutronMassKeV		= keVperAMU*dNeutronMassAMU;
+	const double dElectronMassKeV		= keVperAMU*dElectronMassAMU;
+	const double charge					= 2.0;
+    
+    double dTopMCPDistance = 52.5;
+    double dTopGridDistance = 48.0;
+    double dRightMCPDistance = 52.5;
+    double dRightGridDistance = dTopGridDistance;
+    
+    double dDaughterMassAMU = dDaughterMass;
+    double dDaughterMassKeV = keVperAMU*dDaughterMassAMU;
+    double dFastIonMassKeV = dDaughterMassKeV - charge*dElectronMassKeV;
+    
+    double dMCPBiasKV = 2.5;
+    
+    double dTopGridGap = dTopMCPDistance - dTopGridDistance;
+	double dTopGridAcceleration	= charge*dMCPBiasKV/dTopGridGap/(dFastIonMassKeV/c/c);
+    double dRightGridGap = dRightMCPDistance - dRightGridDistance;
+	double dRightGridAcceleration	= charge*dMCPBiasKV/dRightGridGap/(dFastIonMassKeV/c/c);
+    
+	Double_t a, z1, z2;
+	if (whichMCP == 'R') {
+		a		= dRightGridAcceleration;
+		z1		= dRightGridDistance;
+		z2		= dRightMCPDistance;
+	}
+	if (whichMCP == 'T') {
+		a		= dTopGridAcceleration;
+		z1		= dTopGridDistance;
+		z2		= dTopMCPDistance;
+	}
+	
+	t2 = t2/1000.0; // convert ns to us
+	
+    if (charge == 0) a = 0.000001;
+    
+    Double_t A		= - 9.0*Power(a,2.0)*(3.0*z1-2.0*z2)*t2 - Power(a,3.0)*Power(t2,3.0);
+	Double_t B		= 27.0*Power(a,3.0)*(8.0*Power(z2,3.0) - a*(27.0*Power(z1,2.0)-36.0*z1*z2+8.0*Power(z2,2.0))*Power(t2,2.0) + 2.0*Power(a,2.0)*(z2-z1)*Power(t2,4.0));
+	Double_t theta	= ATan(Sqrt(B)/A)+Pi();
+	Double_t t1		= (1.0/6.0)*(4.0*t2-((6*z2+a*t2*t2)/Power(A*A+B,1.0/6.0)+Power(A*A+B,1.0/6.0)/a)*(Cos(theta/3)-Sqrt(3)*Sin(theta/3)));
+	   
+	return 1000.0 * t1; // return in ns
+}
+
+char* nameFile(char* isotope){
+    
+    const char* rootFile = "_mono.root";
+    const char* inExt = "/home/gwilson/BEARTrap/En/";
+    char* inFile;
+    inFile = malloc(strlen(isotope)+50);
+    strcpy(inFile, inExt);
+    strcat(inFile, isotope);
+    strcat(inFile, rootFile);
+    
+    return inFile;
+}
+
+char* nameHisto(char* isotope){
+    
+    const char* rootFile = "_histos.root";
+    const char* inExt = "/home/gwilson/BEARTrap/En/";
+    char* inFile;
+    inFile = malloc(strlen(isotope)+50);
+    strcpy(inFile, inExt);
+    strcat(inFile, isotope);
+    strcat(inFile, rootFile);
+    
+    return inFile;
+}
