@@ -43,7 +43,10 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)  //bswang (5/11/2015)
 {
         //bswang (5/11/2015):
         G4int runnum = aRun->GetRunID();
-        //G4cout << "Run ID = " << runnum << G4endl;
+        if((runnum+1)%10000==0){
+	  G4cout << "Run ID = " << runnum << G4endl;
+	  G4cout.flush();
+	}
         if (runnum == 0)
           {
           G4int initEID = 0; 
